@@ -1,0 +1,86 @@
+create database ;
+use ;
+
+create schema ;  
+
+create table .proveedores(
+	idProveedor int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	telefono int NOT NULL UNIQUE,
+	nombreCompania varchar(25) NOT NULL,
+	estaActivo varchar(5) NOT NULL,
+	idPais int NOT NULL FOREIGN KEY REFERENCES pais(idPais),
+  CONSTRAINT activo_CHK CHECK (estaActivo='A' OR estaActivo='I')
+);
+
+create table .vendedor(
+	idVendedor int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  nombre varchar(25) NOT NULL,
+  puesto varchar(25) NOT NULL,
+  email varchar(50) NOT NULL UNIQUE,
+  telefonoMovil int NOT NULL UNIQUE,
+	telefonoOficina int NOT NULL UNIQUE,
+  extOficina int NOT NULL UNIQUE,
+	idGenero int NOT NULL,
+  idProveedor int NOT NULL,
+	idGenero FOREIGN KEY REFERENCES genero(idGenero),
+  idProveedor FOREIGN KEY REFERENCES proveedores(idProveedor),
+);
+
+create table .inventario(
+	idProducto int NOT NULL PRIMARY KEY,
+	cantidadMinimaPermitida int NOT NULL,
+	fechaIngreso date NOT NULL,
+);
+
+create table .producto(
+	idProducto int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  nombre varchar(30) NOT NULL PRIMARY KEY,
+	precioUnitario money NOT NULL,
+  estaDescontinuado varchar(5) NOT NULL,
+	idProveedor int NOT NULL,
+  CONSTRAINT descontinuado_CHK CHECK (estaDescontinuado='A' OR estaDescontinuado='D')
+  idProveedor FOREIGN KEY REFERENCES proveedores(idProveedor),
+);
+
+create table .ordenCompra(
+	idOrden int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  cedulaCliente int NOT NULL,
+  fecha date NOT NULL PRIMARY KEY,
+	montoTotal money NOT NULL,
+  fechaAplicacionDescuento date,
+  montoDescuento money NOT NULL,
+  idCuponDescuento int,
+  idCuponDescuento FOREIGN KEY REFERENCES cuponDescuento(idCuponDescuento),
+  cedulaCliente FOREIGN KEY REFERENCES cliente(cedulaCliente),
+);
+
+create table .ordenDeCompraEstado(
+	idEstado int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  detalle varchar(30) NOT NULL PRIMARY KEY,
+);
+
+create table .item(
+	idItem int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  monto money NOT NULL,
+  idOrden int NOT NULL,
+  idProducto int NOT NULL,
+  idOrden FOREIGN KEY REFERENCES ordenCompra(idOrden),
+  idProducto FOREIGN KEY REFERENCES proveedor(idProducto),
+);
+
+reate table .bitacoraRegistroAuditoria(
+	idRegistroAuditoria int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  fechaHora datetime NOT NULL,
+  detalle varchar(40) NOT NULL,
+  idTipoRegistroAuditoria int NOT NULL,
+  idEmpleado int NOT NULL,
+  idTipoRegistroAuditoria FOREIGN KEY REFERENCES tipoRegistroAuditoria(idTipoRegistroAuditoria),
+  idEmpleado FOREIGN KEY REFERENCES cliente(cedulaCliente),
+);
+
+create table .tipoRegistroAuditoria(
+	idTipoRegistroAuditoria int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  detalle varchar(30) NOT NULL PRIMARY KEY,
+);
+
+
