@@ -45,7 +45,7 @@ create table .producto(
 create table .ordenCompra(
   idOrden int IDENTITY(1,1) PRIMARY KEY,
   cedulaCliente int NOT NULL,
-  fecha date NOT NULL PRIMARY KEY,
+  fecha date NOT NULL,
   montoTotal money NOT NULL,
   fechaAplicacionDescuento date,
   /*montoDescuento money NOT NULL,*/
@@ -56,7 +56,8 @@ create table .ordenCompra(
 
 create table .ordenDeCompraEstado(
   idEstado int IDENTITY(1,1) PRIMARY KEY,
-  detalle varchar(30) NOT NULL PRIMARY KEY,
+  detalle varchar(30) NOT NULL,
+  CONSTRAINT compraEstado_CHK CHECK (detalle='En preparación' OR detalle='en tránsito' OR detalle='cancelada' OR detalle='entregada' OR detalle='con retraso' OR detalle='extraviado')
 );
 
 create table .item(
@@ -124,3 +125,21 @@ where .ordenCompra.idCuponDescuento = @cuponDescuento
 join .cuponDescuento on .cuponDescuento.porcentajeDescuento)
 end
 go
+
+/*Procedimiento almacenado #5*/
+
+
+/*Procedimiento almacenado #6*/
+
+
+/*Trigeer #9*/
+
+
+/*Trigeer #10*/
+
+
+/*Vista #13 */
+CREATE VIEW productosNoVendidos AS
+SELECT nombre
+FROM producto a, item b
+WHERE a.idProducto <> b.idProducto;
